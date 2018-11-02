@@ -1,37 +1,37 @@
 <style lang="less">
-view, image, text, button, input {
-  box-sizing: border-box;
-}
+  view, image, text, button, input {
+    box-sizing: border-box;
+  }
 </style>
 
 <script>
-import wepy from 'wepy'
-import 'wepy-async-function'
+  import wepy from 'wepy'
+  import 'wepy-async-function'
 
-import { setStore } from 'wepy-redux'
-import configStore from './store'
+  import {setStore} from 'wepy-redux'
+  import configStore from './store'
 
-const store = configStore()
-setStore(store)
+  const store = configStore()
+  setStore(store)
 
-export default class extends wepy.app {
-  config = {
-    pages: [
-      'pages/index',
-      'pages/demo',
-    ],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index',
+        'pages/demo',
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      }
+    }
+
+    constructor() {
+      super()
+      this.use('promisify')
+      this.use('requestfix')
     }
   }
-
-  constructor () {
-    super()
-    this.use('promisify')
-    this.use('requestfix')
-  }
-}
 </script>

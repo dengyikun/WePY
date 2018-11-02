@@ -17,8 +17,9 @@
 
 <script>
   import wepy from 'wepy'
-  import { connect } from 'wepy-redux'
+  import {connect} from 'wepy-redux'
   import 'wepy-async-function';
+  import {request, requestWithToken} from '../utils/request'
 
   @connect({
     num (state) {
@@ -31,13 +32,11 @@
       return state.counter.num + state.counter.asyncNum
     }
   })
-
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: ''
     }
-    components = {
-    }
+    components = {}
 
     data = {
       authorizationVisible: false,
@@ -58,18 +57,25 @@
       }
     }
 
-    events = {
-    }
+    events = {}
 
     async onLoad() {
       wx.showLoading({
         title: '加载中',
       })
-      const data = await wepy.login().catch(error => {
-        debugger
+      const data = await wepy.login().catch(error => {})
+
+      request({
+        url: '/guest/applogin',
+        data: {code: data.code}
       })
-      console.log(data)
-      const userInfo = await wepy.getUserInfo({lang:'zh_CN'}).catch(error => {
+        .then((data) => {
+          wx.setStorageSync('token', data.data)
+          requestWithToken({url: '/guest/currentUserInfo'})
+            .then((data) => {
+            })
+        })
+      const userInfo = await wepy.getUserInfo({lang: 'zh_CN'}).catch(error => {
         wx.hideLoading()
         this.setData({
           authorizationVisible: true
@@ -90,6 +96,7 @@
   .container {
     min-height: 100vh;
   }
+
   .authorization {
     width: 100vw;
     height: 100vh;
@@ -99,31 +106,31 @@
     align-items: center;
 
     image {
-      width: 360rpx;
-      height: 330rpx;
-      margin-top: 170rpx;
+      width: 360 rpx;
+      height: 330 rpx;
+      margin-top: 170 rpx;
     }
 
     .title {
-      font-size: 36rpx;
-      margin-top: 80rpx;
+      font-size: 36 rpx;
+      margin-top: 80 rpx;
     }
 
     .tips {
-      font-size: 28rpx;
+      font-size: 28 rpx;
       color: #a9a9a9;
-      margin-top: 30rpx;
+      margin-top: 30 rpx;
     }
 
     .submit {
-      width: 600rpx;
-      height: 80rpx;
-      line-height: 80rpx;
+      width: 600 rpx;
+      height: 80 rpx;
+      line-height: 80 rpx;
       color: #ffffff;
       text-align: center;
       background: #44b549;
-      border-radius: 80rpx;
-      margin-top: 200rpx;
+      border-radius: 80 rpx;
+      margin-top: 200 rpx;
     }
   }
 </style>
