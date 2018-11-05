@@ -48,10 +48,7 @@ export const request = (options) => new Promise((resolve, reject) => {
       }
     })
     .catch(error => {
-      wx.showToast({
-        title: '请求异常',
-        icon: 'none'
-      })
+      console.log(error, 'request:' + options.url)
       reject(error)
     })
 })

@@ -1,0 +1,2 @@
+export const GETDISHTYPE = 'GETDISHTYPE'
+export const GETALLDISH = 'GETALLDISH'

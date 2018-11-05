@@ -3,9 +3,9 @@ import {LOGIN} from '../types/user'
 
 export default handleActions({
   [LOGIN](state, action) {
-    return {
+    return  {
       ...state,
-      ...action
+      ...action.payload
     }
   }
 }, {

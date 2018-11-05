@@ -20,19 +20,17 @@
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
   import {login} from '../store/actions/user'
-  import {SETTABLEID} from '../store/types/shoppingCar'
 
   @connect({
     user(state) {
       return state.user
     }
   }, {
-    login,
-    setTableId: SETTABLEID,
+    login
   })
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: ''
+      navigationBarTitleText: '线上点餐'
     }
     components = {}
 
@@ -58,47 +56,6 @@
     events = {}
 
     async onLoad() {
-      this.login()
-      this.methods.setTableId('16')
-      const userInfo = await wepy.getUserInfo({lang: 'zh_CN'}).catch(error => {
-        wx.hideLoading()
-        this.setData({
-          authorizationVisible: true
-        })
-      })
-      if (userInfo) this.setUserInfo(userInfo.userInfo)
-    }
-
-    login = () => {
-      wx.showLoading({
-        title: '加载中',
-      })
-      this.methods.login()
-        .then((data) => {
-          wx.hideLoading()
-          if (data.payload.openid) {
-            // wx.reLaunch({
-            //   url: '/pages/menu'
-            // })
-          } else {
-            wx.showModal({
-              content: '出现异常',
-              confirmText: '点击重试',
-              showCancel: false,
-              success: this.login
-            })
-          }
-        })
-        .catch(error => {
-          debugger
-        })
-    }
-
-    setUserInfo = (userInfo) => {
-      console.log(userInfo)
-      wx.reLaunch({
-        url: '/pages/menu'
-      })
     }
   }
 </script>
