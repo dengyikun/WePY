@@ -20,7 +20,7 @@
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
   import {login} from '../store/actions/user'
-  import {SETTABLEID} from '../store/types/shoppingCar'
+  import {SET_TABLE_ID} from '../store/types'
 
   @connect({
     user(state) {
@@ -28,7 +28,7 @@
     }
   }, {
     login,
-    setTableId: SETTABLEID,
+    setTableId: SET_TABLE_ID,
   })
   export default class Index extends wepy.page {
     config = {
@@ -60,13 +60,13 @@
     async onLoad() {
       this.login()
       this.methods.setTableId('16')
-      const userInfo = await wepy.getUserInfo({lang: 'zh_CN'}).catch(error => {
-        wx.hideLoading()
-        this.setData({
-          authorizationVisible: true
-        })
-      })
-      if (userInfo) this.setUserInfo(userInfo.userInfo)
+      // const userInfo = await wepy.getUserInfo({lang: 'zh_CN'}).catch(error => {
+      //   wx.hideLoading()
+      //   this.setData({
+      //     authorizationVisible: true
+      //   })
+      // })
+      // if (userInfo) this.setUserInfo(userInfo.userInfo)
     }
 
     login = () => {
@@ -77,9 +77,9 @@
         .then((data) => {
           wx.hideLoading()
           if (data.payload.openid) {
-            // wx.reLaunch({
-            //   url: '/pages/menu'
-            // })
+            wx.reLaunch({
+              url: '/pages/menu'
+            })
           } else {
             wx.showModal({
               content: '出现异常',
@@ -95,7 +95,6 @@
     }
 
     setUserInfo = (userInfo) => {
-      console.log(userInfo)
       wx.reLaunch({
         url: '/pages/menu'
       })

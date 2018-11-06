@@ -1,9 +1,8 @@
 import {createAction} from 'redux-actions'
-import {GETDISHTYPE, GETALLDISH} from '../types/menu'
-import wepy from 'wepy'
-import {request, requestWithToken} from '../../utils/request'
+import {GET_DISH_TYPE, GET_ALL_DISH} from '../types/menu'
+import {requestWithToken} from '../../utils/request'
 
-export const getDishType = createAction(GETDISHTYPE, () => {
+export const getDishType = createAction(GET_DISH_TYPE, () => {
   return new Promise(async (resolve, reject) => {
 
     const data = await requestWithToken({
@@ -14,7 +13,7 @@ export const getDishType = createAction(GETDISHTYPE, () => {
   })
 })
 
-export const getAllDish = createAction(GETALLDISH, () => {
+export const getAllDish = createAction(GET_ALL_DISH, () => {
   return new Promise(async (resolve, reject) => {
 
     const data = await requestWithToken({

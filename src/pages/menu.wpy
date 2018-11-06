@@ -1,21 +1,30 @@
 <template>
   <view class="container">
-    <view class="notice">您当前用餐桌号是 <text>{{shoppingCar.tableId}}</text> 号</view>
-    <view class="list">
+
+    <!-- 顶部栏 -->
+    <view class="header">您当前用餐桌号是 <text>{{shoppingCar.tableId}}</text> 号</view>
+
+    <!-- 菜单 -->
+    <view class="menu">
+
+      <!-- 菜品分类 -->
       <scroll-view class="type-list" scroll-y>
-        <repeat for="{{menu.dishType}}" key="index" index="index" item="item">
-          <view class="type-item {{index === menu.activeDishTypeIndex ? 'active' : ''}}">
+        <repeat for="{{menu.dishType}}" key="id" index="index" item="item">
+          <view class="type-item {{index === menu.activeDishTypeIndex ? 'active' : ''}}"
+                @tap="onDishTypeTap" data-index="{{index}}">
             {{item.name}}
-            <view class="number {{item.number ? 'active' : ''}}">
-              {{item.number}}
+            <view class="number {{item.number ? 'visible' : ''}}">
+              {{item.number > 99 ? 99 : item.number}}
             </view>
           </view>
         </repeat>
       </scroll-view>
+
+      <!-- 菜品列表 -->
       <scroll-view class="dish-list" scroll-y>
         <view class="dish-type">{{menu.dishType[menu.activeDishTypeIndex].name}}</view>
-        <repeat for="{{menu.dishType[menu.activeDishTypeIndex].dishs}}"
-                key="index" index="index" item="item">
+        <repeat for="{{menu.dishType[menu.activeDishTypeIndex].dishes}}"
+                key="id" index="index" item="item">
           <view class="dish-item}}">
             <image class="cover" src="{{item.picUrl}}"/>
             <view class="info">
@@ -30,28 +39,70 @@
                   ￥<text>{{item.price}}</text>
                 </view>
                 <image src="../assets/images/icon_subtract.png"
-                       class="number-subtract {{item.number ? 'active' : ''}}"/>
-                <view class="number {{item.number ? 'active' : ''}}">
+                       class="number-subtract {{item.number ? 'visible' : ''}}"
+                       @tap="onSubtractDishTap" data-data="{{item}}" data-index="{{index}}"
+                       data-type="{{menu.activeDishTypeIndex}}"/>
+                <view class="number {{item.number ? 'visible' : ''}}">
                   {{item.number}}
                 </view>
-                <image src="../assets/images/icon_add.png" class="number-add"/>
+                <image src="../assets/images/icon_add.png" class="number-add"
+                       @tap="onDddDishTap" data-data="{{item}}" data-index="{{index}}"
+                       data-type="{{menu.activeDishTypeIndex}}"/>
               </view>
             </view>
           </view>
         </repeat>
       </scroll-view>
     </view>
+
+    <!-- 购物车 -->
+    <view class="shopping-car-mask {{shoppingCarVisible? 'visible' : ''}}"
+          @tap="onCloseShoppingCarTap" data-id="mask">
+      <view class="shopping-car-header">
+        购物车
+        <view class="remove-all" @tap="onRemoveShoppingCarTap">
+          <image src="../assets/images/icon_delete.png"/>
+          清空
+        </view>
+      </view>
+      <scroll-view class="shopping-car-list">
+        <repeat for="{{shoppingCar.dishes}}"
+                key="index" index="index" item="item">
+          <view class="dish-item}}">
+            <view class="name">
+              {{item.name}}
+            </view>
+            <view class="price">
+              ￥{{item.price * item.number}}
+            </view>
+            <image src="../assets/images/icon_subtract.png"
+                   class="number-subtract {{item.number ? 'visible' : ''}}"
+                   @tap="onSubtractDishTap" data-data="{{item}}"
+                   data-index="{{item.index}}" data-type="{{item.typeIndex}}"/>
+            <view class="number {{item.number ? 'visible' : ''}}">
+              {{item.number}}
+            </view>
+            <image src="../assets/images/icon_add.png" class="number-add"
+                   @tap="onDddDishTap" data-data="{{item}}"
+                   data-index="{{item.index}}" data-type="{{item.typeIndex}}"/>
+          </view>
+        </repeat>
+      </scroll-view>
+    </view>
+
+    <!-- 底部栏 -->
     <view class="bottom">
       <viev class="shopping-car">
-        <image src="{{shoppingCar.number ? '../assets/images/shopping_car_active.png' : '../assets/images/shopping_car.png'}}"/>
-        <view class="number {{shoppingCar.number ? 'active' : ''}}">
-          {{item.shoppingCar}}
+        <image src="{{shoppingCar.number ? '../assets/images/shopping_car_active.png' : '../assets/images/shopping_car.png'}}"
+               @tap="onShoppingCarTap"/>
+        <view class="number {{shoppingCar.number ? 'visible' : ''}}">
+          {{shoppingCar.number > 99 ? 99 : shoppingCar.number}}
         </view>
       </viev>
       <view class="total">
-        ￥30.00
+        ￥{{shoppingCar.total}}
       </view>
-      <view class="submit">
+      <view class="submit" @tap="onPayTap">
         去结算
       </view>
     </view>
@@ -62,7 +113,16 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
-  import {getDishType, getAllDish} from '../store/actions/menu';
+  import {getAllDish} from '../store/actions/menu';
+  import {
+    UPDATE_ACTIVE_DISH_TYPE_INDEX,
+    ADD_DISH,
+    SUBTRACT_DISH,
+    CLEAR_DISH,
+    ADD_DISH_NUMBER,
+    SUBTRACT_DISH_NUMBER,
+    CLEAR_DISH_NUMBER,
+  } from '../store/types';
 
   @connect({
     menu(state) {
@@ -72,8 +132,14 @@
       return state.shoppingCar
     },
   }, {
-    getDishType,
     getAllDish,
+    updateActiveDishTypeIndex: UPDATE_ACTIVE_DISH_TYPE_INDEX,
+    addDish: ADD_DISH,
+    subtractDish: SUBTRACT_DISH,
+    clearDish: CLEAR_DISH,
+    addDishNumber: ADD_DISH_NUMBER,
+    subtractDishNumber: SUBTRACT_DISH_NUMBER,
+    clearDishNumber: CLEAR_DISH_NUMBER,
   })
 
   export default class Index extends wepy.page {
@@ -83,18 +149,89 @@
     components = {}
 
     data = {
+      shoppingCarVisible: false
     }
 
     methods = {
-      bindGetUserInfo: e => {
-      }
+      onDddDishTap: e => {
+        const {data, index, type} = e.target.dataset
+        const {addDish, addDishNumber} = this.methods
+        const payload = {
+          ...data,
+          index,
+          typeIndex: type,
+        }
+        addDish(payload)
+        addDishNumber(payload)
+      },
+      onSubtractDishTap: e => {
+        const {data, index, type} = e.target.dataset
+        const {subtractDish, subtractDishNumber} = this.methods
+        const payload = {
+          ...data,
+          index,
+          typeIndex: type,
+        }
+        subtractDish(payload)
+        subtractDishNumber(payload)
+      },
+      onDishTypeTap: e => {
+        const {index} = e.target.dataset
+        this.methods.updateActiveDishTypeIndex(index)
+      },
+      onShoppingCarTap: e => {
+        if (this.shoppingCarVisible) {
+          this.shoppingCarVisible = false
+        }else if (this.shoppingCar.number) {
+          this.shoppingCarVisible = true
+        } else {
+          wx.showToast({
+            title: '请先点菜哦！',
+            icon: 'none'
+          })
+        }
+      },
+      onCloseShoppingCarTap: e => {
+        if (e.target.dataset.id === 'mask') {
+          this.shoppingCarVisible = false
+        }
+      },
+      onRemoveShoppingCarTap: e => {
+        wx.showModal({
+          title: '温馨提示',
+          content: '确认要清空购物车吗？',
+          confirmText: '清空',
+          success: (res) => {
+            if (res.confirm) {
+              this.shoppingCarVisible = false
+              this.methods.clearDish()
+              this.methods.clearDishNumber()
+            }
+          }
+        })
+      },
+      onPayTap: e => {
+        if (this.shoppingCar.number) {
+
+        } else {
+          wx.showToast({
+            title: '请先点菜哦！',
+            icon: 'none'
+          })
+        }
+      },
     }
 
     events = {}
 
     async onLoad() {
-      this.methods.getDishType()
+      wx.showLoading({
+        title: '加载中',
+      })
       this.methods.getAllDish()
+        .then((data) => {
+          wx.hideLoading()
+        })
       console.log(this)
     }
   }
@@ -104,10 +241,11 @@
 
   .container {
     height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-flow: column;
 
-    .notice {
+    .header {
       height: 80rpx;
       line-height: 80rpx;
       flex: none;
@@ -121,8 +259,7 @@
       }
     }
 
-    .list {
-      height: 100%;
+    .menu {
       display: flex;
       flex: auto;
 
@@ -165,7 +302,7 @@
             right: 20rpx;
             display: none;
 
-            .active {
+            &.visible {
               display: block;
             }
           }
@@ -173,10 +310,10 @@
       }
 
       .dish-list {
-        width: 100;
+        width: 100%;
         height: 100%;
-        padding-top: 20rpx;
         flex: auto;
+        padding-top: 20rpx;
 
         .dish-type {
           margin: 0 40rpx 20rpx 40rpx;
@@ -236,7 +373,7 @@
                 flex: none;
                 visibility: hidden;
 
-                &.active {
+                &.visible {
                   visibility: visible;
                 }
               }
@@ -249,7 +386,7 @@
                 flex: none;
                 visibility: hidden;
 
-                &.active {
+                &.visible {
                   visibility: visible;
                 }
               }
@@ -268,6 +405,7 @@
     .bottom {
       width: 100%;
       height: 100rpx;
+      line-height: 100rpx;
       display: flex;
       position: relative;
 
@@ -295,7 +433,7 @@
           right: 0rpx;
           display: none;
 
-          .active {
+          &.visible {
             display: block;
           }
         }
@@ -308,7 +446,6 @@
         color: #ffffff;
         text-align: center;
         background: #484848;
-        padding: 20rpx 0;
       }
 
       .submit {
@@ -318,7 +455,95 @@
         color: #000000;
         text-align: center;
         background: @color-primary;
-        padding: 20rpx 0;
+      }
+    }
+
+    .shopping-car-mask {
+      width: 100%;
+      height: calc(~"100vh - 100rpx");
+      background: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      flex-flow: column;
+      justify-content: flex-end;
+      display: none;
+
+      &.visible {
+        display: flex;
+      }
+
+      .shopping-car-header {
+        width: 100%;
+        height: 70rpx;
+        line-height: 70rpx;
+        font-size: 28rpx;
+        background: #f0f0f0;
+        padding:  0 20rpx;
+        display: flex;
+        justify-content: space-between;
+
+        .remove-all {
+          image {
+            width: 34rpx;
+            height: 34rpx;
+            margin-bottom: -4rpx;
+          }
+        }
+      }
+
+      .shopping-car-list {
+        width: 100%;
+        min-height: 110rpx;
+        max-height: 440rpx;
+        padding:  0 20rpx;
+        background: #ffffff;
+
+        .dish-item {
+          width: 100%;
+          height: 110rpx;
+          line-height: 110rpx;
+          font-size: 34rpx;
+          display: flex;
+          align-items: center;
+
+          .name {
+            flex: auto;
+            .ellipsis();
+          }
+
+          .price {
+            color: @color-important;
+            padding: 0 20rpx;
+          }
+
+          .number-subtract {
+             width: 50rpx;
+             height: 50rpx;
+             flex: none;
+             visibility: hidden;
+
+             &.visible {
+               visibility: visible;
+             }
+           }
+
+          .number {
+            width: 80rpx;
+            text-align: center;
+            flex: none;
+            visibility: hidden;
+
+            &.visible {
+              visibility: visible;
+            }
+          }
+
+          .number-add {
+            width: 50rpx;
+            height: 50rpx;
+            flex: none;
+          }
+        }
       }
     }
   }

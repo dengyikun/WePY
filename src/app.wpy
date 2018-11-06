@@ -1,5 +1,5 @@
 <style lang="less">
-  view, image, text, button, input {
+  view, image, text, button, input, scroll-view {
     box-sizing: border-box;
   }
 </style>
@@ -34,13 +34,13 @@
         list: [{
           pagePath: "pages/menu",
           text: "点餐",
-          iconPath: './assets/images/icon_menu_selected.png',
+          iconPath: './assets/images/icon_menu.png',
           selectedIconPath: './assets/images/icon_menu_selected.png',
         }, {
           pagePath: "pages/mine",
           text: "我的",
           iconPath: './assets/images/icon_mine.png',
-          selectedIconPath: './assets/images/icon_mine.png',
+          selectedIconPath: './assets/images/icon_mine_selected.png',
         }]
       },
     }
