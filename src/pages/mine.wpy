@@ -1,16 +1,26 @@
 <template>
   <view class="container">
-    <view class="authorization" hidden="{{!authorizationVisible}}">
-      <image src="../assets/images/authorization.png"/>
-      <view class="title">
-        访问小程序需要获取您的个人信息
-      </view>
-      <view class="tips">
-        用户昵称、头像等
-      </view>
-      <button class="submit" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="bindGetUserInfo">
-        授权
+    <view class="header">
+      <image class="background" src="../assets/images/mine_background.jpg" mode="aspectFill"/>
+      <button class="authorization" open-type="getUserInfo" lang="zh_CN" @getuserinfo="bindGetUserInfo">
+        <image class="avatar" src="{{user.avatarUrl || '../assets/images/icon_people.png'}}"/>
+        <view class="nickname">
+          {{user.nickName || '点击登录'}}
+          <view wx:if="{{user.nickName && user.phone}}">
+            {{user.phone}}
+          </view>
+        </view>
       </button>
+    </view>
+    <view class="order" @tap="onOrderTap">
+      <image class="icon" src="../assets/images/icon_order.png"/>
+      <text>我的订单</text>
+      <image class="arrow" src="../assets/images/icon_arrow_right.png"/>
+    </view>
+    <view class="call" @tap="onCallTap">
+      <image class="icon" src="../assets/images/icon_phone.png"/>
+      <text>联系客服</text>
+      <image class="arrow" src="../assets/images/icon_arrow_right.png"/>
     </view>
   </view>
 </template>
@@ -19,38 +29,38 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
-  import {login} from '../store/actions/user'
 
   @connect({
     user(state) {
       return state.user
     }
   }, {
-    login
   })
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '线上点餐'
+      navigationBarTitleText: '我的'
     }
     components = {}
 
     data = {
-      authorizationVisible: false,
     }
 
     methods = {
       bindGetUserInfo: e => {
         const userInfo = e.detail.userInfo
         if (userInfo) {
-          this.setUserInfo(userInfo)
+          debugger
         } else {
-          setTimeout(() => {
-            this.setData({
-              authorizationVisible: true
-            })
-          }, 0)
         }
-      }
+      },
+      onOrderTap: e => {
+        wx.navigateTo({url: '/pages/order'})
+      },
+      onCallTap: e => {
+        wx.makePhoneCall({
+          phoneNumber: '18888888888'
+        })
+      },
     }
 
     events = {}
@@ -62,42 +72,75 @@
 <style lang="less">
   .container {
     min-height: 100vh;
-  }
 
-  .authorization {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    .header {
+      width: 100%;
+      height: 310rpx;
+      padding: 0 80rpx;
+      position: relative;
+      display: flex;
+      align-items: center;
 
-    image {
-      width: 360 rpx;
-      height: 330 rpx;
-      margin-top: 170 rpx;
+      .background {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      .authorization {
+        width: auto;
+        height: auto;
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+
+        &::after {
+          border: none;
+        }
+
+        .avatar {
+          width: 150rpx;
+          height: 150rpx;
+          margin-right: 20rpx;
+        }
+
+        .nickname {
+          font-size: 30rpx;
+          color: #e1e1e1;
+          line-height: 1.5;
+          text-align: left;
+        }
+      }
     }
 
-    .title {
-      font-size: 36 rpx;
-      margin-top: 80 rpx;
-    }
+    .order, .call {
+      height: 95rpx;
+      line-height: 95rpx;
+      font-size: 26rpx;
+      margin: 0 20rpx;
+      padding: 0 20rpx;
+      border-bottom: 1rpx solid #eaeaea;
+      display: flex;
+      align-items: center;
 
-    .tips {
-      font-size: 28 rpx;
-      color: #a9a9a9;
-      margin-top: 30 rpx;
-    }
+      .icon {
+        width: 40rpx;
+        height: 40rpx;
+      }
 
-    .submit {
-      width: 600 rpx;
-      height: 80 rpx;
-      line-height: 80 rpx;
-      color: #ffffff;
-      text-align: center;
-      background: #44b549;
-      border-radius: 80 rpx;
-      margin-top: 200 rpx;
+      text {
+        flex: auto;
+        padding: 0 20rpx;
+      }
+
+      .arrow {
+        width: 12rpx;
+        height: 26rpx;
+      }
     }
   }
 </style>
