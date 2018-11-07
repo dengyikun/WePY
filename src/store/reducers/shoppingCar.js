@@ -1,5 +1,5 @@
 import {handleActions} from 'redux-actions'
-import {SET_TABLE_ID, ADD_DISH, SUBTRACT_DISH, CLEAR_DISH} from '../types/shoppingCar'
+import {SET_TABLE_ID, ADD_DISH, SUBTRACT_DISH, CLEAR_DISH, UPDATE_SHOPPING_CAR} from '../types/shoppingCar'
 
 export default handleActions({
   [SET_TABLE_ID](state, action) {
@@ -63,9 +63,19 @@ export default handleActions({
       total: "0.00"
     }
   },
+  [UPDATE_SHOPPING_CAR](state, action) {
+    return {
+      ...state,
+      ...action.payload
+    }
+  },
 }, {
   tableId: '',
   dishes: [],
   number: 0,
-  total: "0.00"
+  total: "0.00",
+  people: null,
+  time: null,
+  phone: null,
+  remark: '',
 })

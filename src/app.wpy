@@ -1,5 +1,5 @@
 <style lang="less">
-  view, image, text, button, input, scroll-view {
+  view, image, text, button, input, scroll-view, cover-view {
     box-sizing: border-box;
   }
 </style>
@@ -19,6 +19,7 @@
       pages: [
         'pages/index',
         'pages/menu',
+        'pages/pay',
         'pages/mine',
       ],
       window: {
