@@ -1,5 +1,5 @@
 import {createAction} from 'redux-actions'
-import {LOGIN} from '../types/user'
+import {LOGIN, GET_USER} from '../types/user'
 import wepy from 'wepy'
 import {request, requestWithToken} from '../../utils/request'
 
@@ -14,10 +14,19 @@ export const login = createAction(LOGIN, () => {
 
     wx.setStorageSync('token', tokenData.data)
 
-    const userData = await requestWithToken({
+    resolve(tokenData)
+  })
+})
+
+export const getUser = createAction(GET_USER, () => {
+  return new Promise(async (resolve, reject) => {
+    const data = await requestWithToken({
       url: '/guest/currentUserInfo'
     }).catch(reject)
 
-    resolve(userData.guestInfo)
+    resolve({
+      ...data.guestInfo,
+      ...data.guestInfo
+    })
   })
 })

@@ -20,7 +20,7 @@
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
   import {login} from '../store/actions/user'
-  import {SET_TABLE_ID} from '../store/types'
+  import {SET_TABLE_ID, GET_USER, UPDATE_USER} from '../store/types'
 
   @connect({
     user(state) {
@@ -29,6 +29,8 @@
   }, {
     login,
     setTableId: SET_TABLE_ID,
+    getUser: GET_USER,
+    updateUser: UPDATE_USER,
   })
   export default class Index extends wepy.page {
     config = {
@@ -57,16 +59,10 @@
 
     events = {}
 
-    async onLoad() {
+    onLoad() {
       this.login()
       this.methods.setTableId('16')
-      // const userInfo = await wepy.getUserInfo({lang: 'zh_CN'}).catch(error => {
-      //   wx.hideLoading()
-      //   this.setData({
-      //     authorizationVisible: true
-      //   })
-      // })
-      // if (userInfo) this.setUserInfo(userInfo.userInfo)
+      this.getUserInfo()
     }
 
     login = () => {
@@ -76,7 +72,7 @@
       this.methods.login()
         .then((data) => {
           wx.hideLoading()
-          if (data.payload.openid) {
+          if (data.payload.data) {
             wx.reLaunch({
               url: '/pages/menu'
             })
@@ -94,9 +90,28 @@
         })
     }
 
+    getUserInfo = () => {
+      wepy.getUserInfo({lang: 'zh_CN'})
+        .then(userInfo => {
+          this.setUserInfo(userInfo.userInfo)
+        })
+        .catch(error => {
+        // wx.hideLoading()
+        // this.setData({
+        //   authorizationVisible: true
+        // })
+      })
+    }
+
     setUserInfo = (userInfo) => {
-      wx.reLaunch({
-        url: '/pages/menu'
+      this.methods.updateUser({
+        wechatNickName: userInfo.nickName,
+        profilePic: userInfo.avatarUrl,
+        country: userInfo.country,
+        province: userInfo.province,
+        city: userInfo.city,
+        gender: userInfo.gender,
+        language: userInfo.language,
       })
     }
   }

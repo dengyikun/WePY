@@ -1,19 +1,26 @@
 import {handleActions} from 'redux-actions'
-import {LOGIN} from '../types/user'
+import {LOGIN, UPDATE_USER} from '../types/user'
 
 export default handleActions({
   [LOGIN](state, action) {
     return  {
       ...state,
+    }
+  },
+  [UPDATE_USER](state, action) {
+    return  {
+      ...state,
       ...action.payload
     }
-  }
+  },
 }, {
-  nickName: '',
-  avatarUrl: '',
+  openid: '',
+  wechatNickName: '',
+  profilePic: '',
   country: '',
   province: '',
   city: '',
   gender: 0,
   language: '',
+  mobile: '',
 })

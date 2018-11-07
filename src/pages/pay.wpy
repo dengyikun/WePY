@@ -46,11 +46,11 @@
         </picker>
         <image class="arrow" src="../assets/images/icon_arrow_down.png"/>
       </view>
-      <view class="phone">
+      <view class="mobile">
         <image class="icon" src="../assets/images/icon_phone.png"/>
         联系电话
-        <button open-type="getPhoneNumber" @getphonenumber="onPhoneChange">
-          {{shoppingCar.phone || '点击获取'}}
+        <button open-type="getPhoneNumber" @getphonenumber="onMobileChange">
+          {{shoppingCar.mobile || '点击获取'}}
         </button>
         <image class="arrow" src="../assets/images/icon_arrow_down.png"/>
       </view>
@@ -106,8 +106,8 @@
       onTimeChange: e => {
         this.methods.updateShoppingCar({time: e.detail.value})
       },
-      onPhoneChange: e => {
-        this.methods.updateShoppingCar({phone: e.detail.value})
+      onMobileChange: e => {
+        this.methods.updateShoppingCar({mobile: e.detail.value})
       },
       onRemarkChange: e => {
         this.methods.updateShoppingCar({remark: e.detail.value})
@@ -197,7 +197,7 @@
       border-radius: 10rpx;
       margin-bottom: 20rpx;
 
-      .people, .time, .phone {
+      .people, .time, .mobile {
         width: 100%;
         height: 80rpx;
         line-height: 80rpx;
@@ -241,7 +241,7 @@
         }
       }
 
-      .phone {
+      .mobile {
 
         .icon {
           width: 30rpx;

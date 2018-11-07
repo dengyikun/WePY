@@ -3,11 +3,11 @@
     <view class="header">
       <image class="background" src="../assets/images/mine_background.jpg" mode="aspectFill"/>
       <button class="authorization" open-type="getUserInfo" lang="zh_CN" @getuserinfo="bindGetUserInfo">
-        <image class="avatar" src="{{user.avatarUrl || '../assets/images/icon_people.png'}}"/>
+        <image class="avatar" src="{{user.profilePic || '../assets/images/icon_people.png'}}" mode="aspectFill"/>
         <view class="nickname">
-          {{user.nickName || '点击登录'}}
-          <view wx:if="{{user.nickName && user.phone}}">
-            {{user.phone}}
+          {{user.wechatNickName || '点击登录'}}
+          <view wx:if="{{user.wechatNickName && user.mobile}}">
+            {{user.mobile}}
           </view>
         </view>
       </button>
@@ -29,12 +29,14 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
+  import {UPDATE_USER} from '../store/types'
 
   @connect({
     user(state) {
       return state.user
     }
   }, {
+    updateUser: UPDATE_USER,
   })
   export default class Index extends wepy.page {
     config = {
@@ -49,8 +51,15 @@
       bindGetUserInfo: e => {
         const userInfo = e.detail.userInfo
         if (userInfo) {
-          debugger
-        } else {
+          this.methods.updateUser({
+            wechatNickName: userInfo.nickName,
+            profilePic: userInfo.avatarUrl,
+            country: userInfo.country,
+            province: userInfo.province,
+            city: userInfo.city,
+            gender: userInfo.gender,
+            language: userInfo.language,
+          })
         }
       },
       onOrderTap: e => {
@@ -106,6 +115,7 @@
           width: 150rpx;
           height: 150rpx;
           margin-right: 20rpx;
+          border-radius: 50%;
         }
 
         .nickname {

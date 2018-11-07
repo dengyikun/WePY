@@ -76,6 +76,6 @@ export default handleActions({
   total: "0.00",
   people: null,
   time: null,
-  phone: null,
+  mobile: null,
   remark: '',
 })
