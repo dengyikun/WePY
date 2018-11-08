@@ -8,7 +8,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"appid": "wxadf36ab7e622e35b",
+	"appid": "wxbb05ac95c9f1a000",
 	"projectname": "WePY",
 	"miniprogramRoot": "dist/",
 	"condition": {
@@ -31,9 +31,10 @@
 			"current": 0,
 			"list": [
 				{
-					"id": -1,
-					"name": "pages/pay",
-					"pathName": "pages/pay"
+					"id": 0,
+					"name": "pages/order",
+					"pathName": "pages/order",
+					"query": ""
 				}
 			]
 		}

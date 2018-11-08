@@ -19,8 +19,8 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
-  import {login} from '../store/actions/user'
-  import {SET_TABLE_ID, GET_USER, UPDATE_USER} from '../store/types'
+  import {login, getUser} from '../store/actions/user'
+  import {SET_TABLE_ID, UPDATE_USER} from '../store/types'
 
   @connect({
     user(state) {
@@ -28,8 +28,8 @@
     }
   }, {
     login,
+    getUser,
     setTableId: SET_TABLE_ID,
-    getUser: GET_USER,
     updateUser: UPDATE_USER,
   })
   export default class Index extends wepy.page {
@@ -73,6 +73,7 @@
         .then((data) => {
           wx.hideLoading()
           if (data.payload.data) {
+            this.methods.getUser()
             wx.reLaunch({
               url: '/pages/menu'
             })
