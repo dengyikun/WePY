@@ -1,7 +1,7 @@
 {
 	"description": "A WePY project",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
@@ -32,8 +32,8 @@
 			"list": [
 				{
 					"id": 0,
-					"name": "pages/order",
-					"pathName": "pages/order",
+					"name": "pages/orderDetail",
+					"pathName": "pages/orderDetail",
 					"query": ""
 				}
 			]

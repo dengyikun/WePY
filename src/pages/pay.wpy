@@ -6,7 +6,7 @@
     <view class="menu">
       <repeat for="{{shoppingCar.dishes}}"
               key="index" index="index" item="item">
-        <view class="dish-item">
+        <view class="dish">
           <view class="name">
             {{item.name}}
           </view>
@@ -18,7 +18,7 @@
           </view>
         </view>
       </repeat>
-      <view class="dish-item">
+      <view class="dish">
         <view class="name">
           合计
         </view>
@@ -156,7 +156,7 @@
       border: 1rpx solid #eaeaea;
       margin-bottom: 20rpx;
 
-      .dish-item {
+      .dish {
         width: 100%;
         height: 80rpx;
         line-height: 80rpx;

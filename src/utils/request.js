@@ -1,6 +1,6 @@
 import wepy from 'wepy'
 
-const apiHost = 'http://xbb.jscssui.cn'
+const apiHost = 'https://www.russan.xyz'
 
 const codeMessage = {
   200: '200 成功获取请求的数据',

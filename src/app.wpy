@@ -22,6 +22,7 @@
         'pages/pay',
         'pages/mine',
         'pages/order',
+        'pages/orderDetail',
       ],
       window: {
         navigationBarBackgroundColor: '#333333',
