@@ -68,7 +68,7 @@
       <cover-view class="total">
         总金额：￥{{shoppingCar.total}}
       </cover-view>
-      <cover-view class="pay">
+      <cover-view class="pay" @tap="onPayTap">
         支付
       </cover-view>
     </cover-view>
@@ -79,14 +79,20 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
-  import {UPDATE_SHOPPING_CAR} from '../store/types'
+  import {UPDATE_SHOPPING_CAR, CLEAR_DISH, CLEAR_DISH_NUMBER} from '../store/types'
+  import {createOrder, orderPay, confirmOrderPay} from '../store/actions/order'
 
   @connect({
     shoppingCar(state) {
       return state.shoppingCar
     },
   }, {
-    updateShoppingCar: UPDATE_SHOPPING_CAR
+    updateShoppingCar: UPDATE_SHOPPING_CAR,
+    createOrder,
+    orderPay,
+    confirmOrderPay,
+    clearDish: CLEAR_DISH,
+    clearDishNumber: CLEAR_DISH_NUMBER,
   })
   export default class Index extends wepy.page {
     config = {
@@ -114,6 +120,37 @@
       onTagTap: e => {
         const tag = e.currentTarget.dataset.tag
         this.methods.updateShoppingCar({remark: this.shoppingCar.remark + tag + '、'})
+      },
+      onPayTap: async e => {
+        const {tableId, dishes, people, time, mobile, remark} = this.shoppingCar
+        const {createOrder, orderPay, confirmOrderPay, clearDish, clearDishNumber } = this.methods
+        try {
+          wx.showLoading({
+            title: '下单中',
+          })
+          const orderData = await createOrder({
+            diningTableNum: tableId,
+            numberOfDinner: people,
+            dinnerTime: time,
+            remark,
+            orderItems: Array.from(dishes, dish => ({
+              dishId: dish.id,
+              dishNum: dish.number
+            }))
+          })
+          const payData = await orderPay({orderId: orderData.payload.data})
+          const payMessage = await wepy.requestPayment(payData.payload.data)
+          if (payMessage) {
+            confirmOrderPay({id: orderData.payload.data})
+              .then(data => {
+                clearDish()
+                clearDishNumber()
+                wx.redirectTo({url: '/pages/order'})
+              })
+          }
+        } catch (e) {
+          wx.hideLoading()
+        }
       }
     }
 

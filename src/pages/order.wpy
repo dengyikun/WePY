@@ -28,7 +28,7 @@
         <!--<view class="wait">-->
           <!--等待就餐-->
         <!--</view>-->
-        <view class="more">
+        <view class="more" @tap="onMoreTap">
           再来一单
         </view>
       </view>
@@ -61,6 +61,12 @@
     methods = {
       onOrderTap: e => {
         wx.navigateTo({url: '/pages/orderDetail'})
+      },
+      onMoreTap: e => {
+        wx.showToast({
+          title: '开发中......',
+          icon: 'none'
+        })
       },
     }
 
