@@ -3,7 +3,9 @@
 
     <!-- 顶部栏 -->
     <view class="header">
-      您当前用餐桌号是 <text>{{shoppingCar.tableId}}</text> 号
+      您当前用餐桌号是
+      <text>{{shoppingCar.tableId}}</text>
+      号
     </view>
 
     <!-- 菜单 -->
@@ -24,7 +26,9 @@
 
       <!-- 菜品列表 -->
       <scroll-view class="dish-list" scroll-y>
-        <view class="dish-type"><text>{{menu.dishType[menu.activeDishTypeIndex].name}}</text></view>
+        <view class="dish-type">
+          <text>{{menu.dishType[menu.activeDishTypeIndex].name}}</text>
+        </view>
         <repeat for="{{menu.dishType[menu.activeDishTypeIndex].dishes}}"
                 key="id" index="index" item="item">
           <view class="dish-item}}">
@@ -38,7 +42,8 @@
               </view>
               <view class="info-bottom">
                 <view class="price">
-                  ￥<text>{{item.price}}</text>
+                  ￥
+                  <text>{{item.price}}</text>
                 </view>
                 <image src="../assets/images/icon_subtract.png"
                        class="number-subtract {{item.number ? 'visible' : ''}}"
@@ -95,8 +100,8 @@
     <!-- 底部栏 -->
     <view class="footer">
       <viev class="shopping-car">
-        <image src="{{shoppingCar.number ? '../assets/images/shopping_car_active.png' : '../assets/images/shopping_car.png'}}"
-               @tap="onShoppingCarTap"/>
+        <image @tap="onShoppingCarTap"
+               src="{{shoppingCar.number ? '../assets/images/shopping_car_active.png' : '../assets/images/shopping_car.png'}}"/>
         <view class="number {{shoppingCar.number ? 'visible' : ''}}">
           {{shoppingCar.number > 99 ? 99 : shoppingCar.number}}
         </view>
@@ -184,7 +189,7 @@
       onShoppingCarTap: e => {
         if (this.shoppingCarVisible) {
           this.shoppingCarVisible = false
-        }else if (this.shoppingCar.number) {
+        } else if (this.shoppingCar.number) {
           this.shoppingCarVisible = true
         } else {
           wx.showToast({
@@ -248,14 +253,14 @@
     flex-flow: column;
 
     .header {
-      height: 80rpx;
-      line-height: 80rpx;
-      font-size: 30rpx;
+      height: ~'80rpx';
+      line-height: ~'80rpx';
+      font-size: ~'30rpx';
       flex: none;
       text-align: center;
       color: #a14500;
       background: #f4f4f4;
-      border-bottom: 1rpx solid #eaeaea;
+      border-bottom: ~'1rpx' solid #eaeaea;
 
       text {
         color: @color-important;
@@ -268,42 +273,42 @@
       flex: auto;
 
       .type-list {
-        width: 200rpx;
+        width: ~'200rpx';
         flex: none;
         background: #fafafa;
-        padding-bottom: 90rpx;
+        padding-bottom: ~'90rpx';
 
         .type-item {
           width: 100%;
-          height: 100rpx;
-          line-height: 100rpx;
-          font-size: 32rpx;
+          height: ~'100rpx';
+          line-height: ~'100rpx';
+          font-size: ~'32rpx';
           color: #575757;
           text-align: center;
           border: solid #eaeaea;
-          border-width: 0 1rpx 1rpx 0;
+          border-width: 0 ~'1rpx' ~'1rpx' 0;
           position: relative;
           .ellipsis();
 
           &.active {
             background: #ffffff;
             color: @color-important;
-            border-left: 8rpx solid @color-important;
-            border-right: 1rpx solid #ffffff;
+            border-left: ~'8rpx' solid @color-important;
+            border-right: ~'1rpx' solid #ffffff;
           }
 
           .number {
-            width: 34rpx;
-            height: 34rpx;
-            line-height: 30rpx;
+            width: ~'34rpx';
+            height: ~'34rpx';
+            line-height: ~'30rpx';
             color: #ffffff;
-            font-size: 24rpx;
+            font-size: ~'24rpx';
             text-align: center;
             background: red;
             border-radius: 50%;
             position: absolute;
-            top: 10rpx;
-            right: 20rpx;
+            top: ~'10rpx';
+            right: ~'20rpx';
             display: none;
 
             &.visible {
@@ -316,26 +321,26 @@
       .dish-list {
         width: 100%;
         flex: auto;
-        padding-bottom: 90rpx;
+        padding-bottom: ~'90rpx';
 
         .dish-type {
-          padding: 20rpx 40rpx;
+          padding: ~'20rpx' ~'40rpx';
 
           text {
-            padding-left: 15rpx;
-            font-size: 26rpx;
-            border-left: 4rpx solid @color-primary;
+            padding-left: ~'15rpx';
+            font-size: ~'26rpx';
+            border-left: ~'4rpx' solid @color-primary;
           }
         }
 
         .dish-item {
-          padding: 20rpx 40rpx;
+          padding: ~'20rpx' ~'40rpx';
           display: flex;
 
           .cover {
-            width: 145rpx;
-            height: 145rpx;
-            margin-right: 20rpx;
+            width: ~'145rpx';
+            height: ~'145rpx';
+            margin-right: ~'20rpx';
             flex: none;
           }
 
@@ -345,37 +350,37 @@
             flex-flow: column;
 
             .name {
-              font-size: 30rpx;
+              font-size: ~'30rpx';
               font-weight: bold;
               .ellipsis();
             }
 
             .sales {
-              margin-top: 15rpx;
-              font-size: 22rpx;
+              margin-top: ~'15rpx';
+              font-size: ~'22rpx';
               color: #797979;
               .ellipsis();
             }
 
             .info-bottom {
               display: flex;
-              margin-top: 15rpx;
+              margin-top: ~'15rpx';
 
               .price {
-                max-width: 170rpx;
+                max-width: ~'170rpx';
                 color: @color-important;
-                font-size: 22rpx;
+                font-size: ~'22rpx';
                 flex: auto;
                 .ellipsis();
 
                 text {
-                  font-size: 30rpx;
+                  font-size: ~'30rpx';
                 }
               }
 
               .number-subtract {
-                width: 40rpx;
-                height: 40rpx;
+                width: ~'40rpx';
+                height: ~'40rpx';
                 flex: none;
                 visibility: hidden;
 
@@ -385,9 +390,9 @@
               }
 
               .number {
-                width: 60rpx;
-                font-size: 28rpx;
-                line-height: 38rpx;
+                width: ~'60rpx';
+                font-size: ~'28rpx';
+                line-height: ~'38rpx';
                 text-align: center;
                 flex: none;
                 visibility: hidden;
@@ -398,8 +403,8 @@
               }
 
               .number-add {
-                width: 40rpx;
-                height: 40rpx;
+                width: ~'40rpx';
+                height: ~'40rpx';
                 flex: none;
               }
             }
@@ -410,8 +415,8 @@
 
     .footer {
       width: 100%;
-      height: 90rpx;
-      line-height: 90rpx;
+      height: ~'90rpx';
+      line-height: ~'90rpx';
       display: flex;
       position: fixed;
       bottom: 0;
@@ -419,26 +424,26 @@
 
       .shopping-car {
         position: absolute;
-        top: -30rpx;
-        left: 20rpx;
+        top: ~'-30rpx';
+        left: ~'20rpx';
 
         image {
-          width: 105rpx;
-          height: 105rpx;
+          width: ~'105rpx';
+          height: ~'105rpx';
         }
 
         .number {
-          width: 34rpx;
-          height: 34rpx;
-          line-height: 30rpx;
+          width: ~'34rpx';
+          height: ~'34rpx';
+          line-height: ~'30rpx';
           color: #ffffff;
-          font-size: 24rpx;
+          font-size: ~'24rpx';
           text-align: center;
           background: red;
           border-radius: 50%;
           position: absolute;
-          top: 0rpx;
-          right: 0rpx;
+          top: 0;
+          right: 0;
           display: none;
 
           &.visible {
@@ -450,7 +455,7 @@
       .total {
         width: 60%;
         height: 100%;
-        font-size: 30rpx;
+        font-size: ~'30rpx';
         color: #ffffff;
         text-align: center;
         background: #484848;
@@ -459,7 +464,7 @@
       .submit {
         width: 40%;
         height: 100%;
-        font-size: 30rpx;
+        font-size: ~'30rpx';
         color: #000000;
         text-align: center;
         background: @color-primary;
@@ -475,7 +480,7 @@
       flex-flow: column;
       justify-content: flex-end;
       display: none;
-      padding-bottom: 90rpx;
+      padding-bottom: ~'90rpx';
 
       &.visible {
         display: flex;
@@ -483,38 +488,38 @@
 
       .shopping-car-header {
         width: 100%;
-        height: 70rpx;
-        line-height: 70rpx;
-        font-size: 26rpx;
+        height: ~'70rpx';
+        line-height: ~'70rpx';
+        font-size: ~'26rpx';
         background: #f0f0f0;
-        padding:  0 20rpx;
+        padding: ~'0 20rpx';
         display: flex;
         justify-content: space-between;
 
         .remove-all {
           image {
-            width: 34rpx;
-            height: 34rpx;
-            margin-bottom: -4rpx;
+            width: ~'34rpx';
+            height: ~'34rpx';
+            margin-bottom: ~'-4rpx';
           }
         }
       }
 
       .shopping-car-list {
         width: 100%;
-        min-height: 110rpx;
-        max-height: 500rpx;
-        padding:  0 20rpx;
+        min-height: ~'110rpx';
+        max-height: ~'500rpx';
+        padding: ~'0 20rpx';
         background: #ffffff;
 
         .dish-item {
           width: 100%;
-          height: 110rpx;
-          line-height: 110rpx;
-          font-size: 28rpx;
+          height: ~'110rpx';
+          line-height: ~'110rpx';
+          font-size: ~'28rpx';
           display: flex;
           align-items: center;
-          border-bottom: 1rpx solid #eaeaea;
+          border-bottom: ~'1rpx' solid #eaeaea;
 
           .name {
             flex: auto;
@@ -523,22 +528,22 @@
 
           .price {
             color: @color-important;
-            padding: 0 20rpx;
+            padding: ~'0 20rpx';
           }
 
           .number-subtract {
-             width: 50rpx;
-             height: 50rpx;
-             flex: none;
-             visibility: hidden;
+            width: ~'50rpx';
+            height: ~'50rpx';
+            flex: none;
+            visibility: hidden;
 
-             &.visible {
-               visibility: visible;
-             }
-           }
+            &.visible {
+              visibility: visible;
+            }
+          }
 
           .number {
-            width: 80rpx;
+            width: ~'80rpx';
             text-align: center;
             flex: none;
             visibility: hidden;
@@ -549,8 +554,8 @@
           }
 
           .number-add {
-            width: 50rpx;
-            height: 50rpx;
+            width: ~'50rpx';
+            height: ~'50rpx';
             flex: none;
           }
         }

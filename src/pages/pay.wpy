@@ -1,7 +1,9 @@
 <template>
   <view class="container">
     <view class="header">
-      您当前用餐桌号是 <text>{{shoppingCar.tableId}}</text> 号
+      您当前用餐桌号是
+      <text>{{shoppingCar.tableId}}</text>
+      号
     </view>
     <view class="menu">
       <repeat for="{{shoppingCar.dishes}}"
@@ -42,7 +44,7 @@
         用餐时间
         <picker mode="time" start="08:00" end="24:00"
                 value="{{shoppingCar.time}}" @change="onTimeChange">
-            {{shoppingCar.time || '请选择用餐时间'}}
+          {{shoppingCar.time || '请选择用餐时间'}}
         </picker>
         <image class="arrow" src="../assets/images/icon_arrow_down.png"/>
       </view>
@@ -175,19 +177,19 @@
 
   .container {
     min-height: 100vh;
-    padding: 10rpx 20rpx 100rpx 20rpx;
+    padding: ~'10rpx' ~'20rpx' ~'100rpx' ~'20rpx';
     background: #f5f5f5;
 
     .header {
       width: 100%;
-      height: 90rpx;
-      line-height: 90rpx;
-      font-size: 30rpx;
+      height: ~'90rpx';
+      line-height: ~'90rpx';
+      font-size: ~'30rpx';
       color: #a14500;
       text-align: center;
       background: @color-primary;
-      border-radius: 10rpx;
-      margin-bottom: 20rpx;
+      border-radius: ~'10rpx';
+      margin-bottom: ~'20rpx';
 
       text {
         color: @color-important;
@@ -198,18 +200,18 @@
     .menu {
       width: 100%;
       background: #ffffff;
-      padding: 0 20rpx;
-      border-radius: 10rpx;
-      border: 1rpx solid #eaeaea;
-      margin-bottom: 20rpx;
+      padding: 0 ~'20rpx';
+      border-radius: ~'10rpx';
+      border: ~'1rpx' solid #eaeaea;
+      margin-bottom: ~'20rpx';
 
       .dish {
         width: 100%;
-        height: 80rpx;
-        line-height: 80rpx;
-        font-size: 24rpx;
+        height: ~'80rpx';
+        line-height: ~'80rpx';
+        font-size: ~'24rpx';
         display: flex;
-        border-bottom: 1rpx solid #eaeaea;
+        border-bottom: ~'1rpx' solid #eaeaea;
 
         &:last-child {
           border: none;
@@ -240,17 +242,17 @@
     .user-info {
       width: 100%;
       background: #ffffff;
-      padding: 0 20rpx;
-      border-radius: 10rpx;
-      border: 1rpx solid #eaeaea;
-      margin-bottom: 20rpx;
+      padding: 0 ~'20rpx';
+      border-radius: ~'10rpx';
+      border: ~'1rpx' solid #eaeaea;
+      margin-bottom: ~'20rpx';
 
       .people, .time, .mobile {
         width: 100%;
-        height: 80rpx;
-        line-height: 80rpx;
-        font-size: 24rpx;
-        border-bottom: 1rpx solid #eaeaea;
+        height: ~'80rpx';
+        line-height: ~'80rpx';
+        font-size: ~'24rpx';
+        border-bottom: ~'1rpx' solid #eaeaea;
         display: flex;
         align-items: center;
 
@@ -259,9 +261,9 @@
         }
 
         .icon {
-          width: 40rpx;
-          height: 40rpx;
-          margin-right: 10rpx;
+          width: ~'40rpx';
+          height: ~'40rpx';
+          margin-right: ~'10rpx';
         }
       }
 
@@ -269,7 +271,7 @@
 
         input {
           flex: auto;
-          padding: 0 20rpx;
+          padding: 0 ~'20rpx';
           text-align: right;
           color: #777777;
         }
@@ -278,32 +280,32 @@
       .time {
         picker {
           flex: auto;
-          padding: 0 20rpx;
+          padding: 0 ~'20rpx';
           text-align: right;
           color: #777777;
         }
 
         .arrow {
-          width: 23rpx;
-          height: 14rpx;
+          width: ~'23rpx';
+          height: ~'14rpx';
         }
       }
 
       .mobile {
 
         .icon {
-          width: 30rpx;
-          height: 30rpx;
-          margin: 0 15rpx 0 5rpx;
+          width: ~'30rpx';
+          height: ~'30rpx';
+          margin: 0 ~'15rpx' 0 ~'5rpx';
         }
 
         button {
           height: 100%;
           flex: auto;
-          padding: 10rpx 40rpx 10rpx 20rpx;
+          padding: ~'10rpx' ~'40rpx' ~'10rpx' ~'20rpx';
           text-align: right;
           color: #777777;
-          font-size: 24rpx;
+          font-size: ~'24rpx';
           background: transparent;
           vertical-align: middle;
 
@@ -317,14 +319,14 @@
     .remark {
       width: 100%;
       background: #ffffff;
-      padding: 20rpx;
-      border-radius: 10rpx;
-      border: 1rpx solid #eaeaea;
+      padding: ~'20rpx';
+      border-radius: ~'10rpx';
+      border: ~'1rpx' solid #eaeaea;
 
       textarea {
-        font-size: 24rpx;
-        min-height: 100rpx;
-        margin-bottom: 20rpx;
+        font-size: ~'24rpx';
+        min-height: ~'100rpx';
+        margin-bottom: ~'20rpx';
       }
 
       .tags {
@@ -332,19 +334,19 @@
         flex-wrap: wrap;
 
         .tag {
-          font-size: 18rpx;
+          font-size: ~'18rpx';
           text-align: center;
-          border: 1rpx solid #eaeaea;
-          padding: 10rpx 20rpx;
-          border-radius: 7rpx;
-          margin: 10rpx 20rpx 0 0;
+          border: ~'1rpx' solid #eaeaea;
+          padding: ~'10rpx' ~'20rpx';
+          border-radius: ~'7rpx';
+          margin: ~'10rpx' ~'20rpx' 0 0;
         }
       }
     }
 
     .footer {
       width: 100%;
-      height: 90rpx;
+      height: ~'90rpx';
       position: fixed;
       bottom: 0;
       left: 0;
@@ -352,19 +354,19 @@
 
       .total {
         height: 100%;
-        line-height: 90rpx;
-        font-size: 30rpx;
+        line-height: ~'90rpx';
+        font-size: ~'30rpx';
         color: #ffffff;
         background: #484848;
-        padding: 0 20rpx;
+        padding: 0 ~'20rpx';
         flex: auto;
       }
 
       .pay {
-        width: 280rpx;
+        width: ~'280rpx';
         height: 100%;
-        line-height: 90rpx;
-        font-size: 30rpx;
+        line-height: ~'90rpx';
+        font-size: ~'30rpx';
         text-align: center;
         background: @color-primary;
       }

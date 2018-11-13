@@ -81,8 +81,7 @@
     }
     components = {}
 
-    data = {
-    }
+    data = {}
 
     methods = {
       onOrderTap: e => {
@@ -93,7 +92,7 @@
           title: '支付中',
         })
         const id = e.currentTarget.dataset.id
-        const { orderPay, confirmOrderPay } = this.methods
+        const {orderPay, confirmOrderPay} = this.methods
         const payData = await orderPay({orderId: id})
         const payMessage = await wepy.requestPayment(payData.payload.data)
           .catch(error => {
@@ -177,21 +176,21 @@
   .container {
     background: #f5f5f5;
     min-height: 100vh;
-    padding: 20rpx;
+    padding: ~'20rpx';
 
     .order {
       width: 100%;
       background: #ffffff;
-      border-radius: 10rpx;
-      border: 1rpx solid #eaeaea;
-      margin-bottom: 20rpx;
+      border-radius: ~'10rpx';
+      border: ~'1rpx' solid #eaeaea;
+      margin-bottom: ~'20rpx';
 
       .info {
-        font-size: 22rpx;
-        line-height: 40rpx;
+        font-size: ~'22rpx';
+        line-height: ~'40rpx';
         color: #595959;
-        padding: 20rpx 30rpx;
-        border-bottom: 1rpx solid #eaeaea;
+        padding: ~'20rpx' ~'30rpx';
+        border-bottom: ~'1rpx' solid #eaeaea;
         display: flex;
         flex-wrap: wrap;
 
@@ -214,18 +213,18 @@
         }
 
         .dish-name {
-          max-width: 290rpx;
-          margin-right: 20rpx;
+          max-width: ~'290rpx';
+          margin-right: ~'20rpx';
           .ellipsis();
         }
 
         .dish-number {
-          margin-right: 20rpx;
+          margin-right: ~'20rpx';
           flex: auto;
         }
 
         .total {
-          width: 200rpx;
+          width: ~'200rpx';
           text-align: right;
           color: @color-important;
           flex: none;
@@ -233,18 +232,18 @@
       }
 
       .action {
-        padding: 10rpx;
+        padding: ~'10rpx';
         display: flex;
         flex-flow: row-reverse;
 
         .pay, .wait, .one-more {
-          width: 160rpx;
-          height: 50rpx;
-          line-height: 50rpx;
-          font-size: 24rpx;
+          width: ~'160rpx';
+          height: ~'50rpx';
+          line-height: ~'50rpx';
+          font-size: ~'24rpx';
           text-align: center;
           background: @color-primary;
-          border-radius: 5rpx;
+          border-radius: ~'5rpx';
         }
 
         .wait {

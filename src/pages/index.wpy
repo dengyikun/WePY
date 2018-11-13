@@ -97,11 +97,11 @@
           this.setUserInfo(userInfo.userInfo)
         })
         .catch(error => {
-        // wx.hideLoading()
-        // this.setData({
-        //   authorizationVisible: true
-        // })
-      })
+          // wx.hideLoading()
+          // this.setData({
+          //   authorizationVisible: true
+          // })
+        })
     }
 
     setUserInfo = (userInfo) => {
@@ -131,31 +131,31 @@
     align-items: center;
 
     image {
-      width: 360 rpx;
-      height: 330 rpx;
-      margin-top: 170 rpx;
+      width: ~'360rpx';
+      height: ~'330rpx';
+      margin-top: ~'170rpx';
     }
 
     .title {
-      font-size: 36 rpx;
-      margin-top: 80 rpx;
+      font-size: ~'36rpx';
+      margin-top: ~'80rpx';
     }
 
     .tips {
-      font-size: 28 rpx;
+      font-size: ~'28rpx';
       color: #a9a9a9;
-      margin-top: 30 rpx;
+      margin-top: ~'30rpx';
     }
 
     .submit {
-      width: 600 rpx;
-      height: 80 rpx;
-      line-height: 80 rpx;
+      width: ~'600rpx';
+      height: ~'80rpx';
+      line-height: ~'80rpx';
       color: #ffffff;
       text-align: center;
       background: #44b549;
-      border-radius: 80 rpx;
-      margin-top: 200 rpx;
+      border-radius: ~'80rpx';
+      margin-top: ~'200rpx';
     }
   }
 </style>
