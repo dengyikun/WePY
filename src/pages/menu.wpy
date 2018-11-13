@@ -118,12 +118,12 @@
   import {getAllDish} from '../store/actions/menu';
   import {
     UPDATE_ACTIVE_DISH_TYPE_INDEX,
-    ADD_DISH,
-    SUBTRACT_DISH,
-    CLEAR_DISH,
-    ADD_DISH_NUMBER,
-    SUBTRACT_DISH_NUMBER,
-    CLEAR_DISH_NUMBER,
+    ADD_IN_SHOPPING_CAR,
+    SUBTRACT_IN_SHOPPING_CAR,
+    CLEAR_SHOPPING_CAR,
+    ADD_IN_MENU,
+    SUBTRACT_IN_MENU,
+    CLEAR_MENU,
   } from '../store/types';
 
   @connect({
@@ -136,12 +136,12 @@
   }, {
     getAllDish,
     updateActiveDishTypeIndex: UPDATE_ACTIVE_DISH_TYPE_INDEX,
-    addDish: ADD_DISH,
-    subtractDish: SUBTRACT_DISH,
-    clearDish: CLEAR_DISH,
-    addDishNumber: ADD_DISH_NUMBER,
-    subtractDishNumber: SUBTRACT_DISH_NUMBER,
-    clearDishNumber: CLEAR_DISH_NUMBER,
+    addInShoppingCar: ADD_IN_SHOPPING_CAR,
+    subtractInShoppingCar: SUBTRACT_IN_SHOPPING_CAR,
+    clearShoppingCar: CLEAR_SHOPPING_CAR,
+    addInMenu: ADD_IN_MENU,
+    subtractInMenu: SUBTRACT_IN_MENU,
+    clearMenu: CLEAR_MENU,
   })
 
   export default class Index extends wepy.page {
@@ -157,25 +157,25 @@
     methods = {
       onDddDishTap: e => {
         const {data, index, type} = e.target.dataset
-        const {addDish, addDishNumber} = this.methods
+        const {addInShoppingCar, addInMenu} = this.methods
         const payload = {
           ...data,
           index,
           typeIndex: type,
         }
-        addDish(payload)
-        addDishNumber(payload)
+        addInShoppingCar(payload)
+        addInMenu(payload)
       },
       onSubtractDishTap: e => {
         const {data, index, type} = e.target.dataset
-        const {subtractDish, subtractDishNumber} = this.methods
+        const {subtractInShoppingCar, subtractInMenu} = this.methods
         const payload = {
           ...data,
           index,
           typeIndex: type,
         }
-        subtractDish(payload)
-        subtractDishNumber(payload)
+        subtractInShoppingCar(payload)
+        subtractInMenu(payload)
       },
       onDishTypeTap: e => {
         const {index} = e.target.dataset
@@ -206,8 +206,8 @@
           success: (res) => {
             if (res.confirm) {
               this.shoppingCarVisible = false
-              this.methods.clearDish()
-              this.methods.clearDishNumber()
+              this.methods.clearShoppingCar()
+              this.methods.clearMenu()
             }
           }
         })
@@ -226,7 +226,7 @@
 
     events = {}
 
-    async onLoad() {
+    onLoad() {
       wx.showLoading({
         title: '加载中',
       })

@@ -50,7 +50,7 @@
         <image class="icon" src="../assets/images/icon_phone.png"/>
         联系电话
         <button open-type="getPhoneNumber" @getphonenumber="onMobileChange">
-          {{shoppingCar.mobile || '点击获取'}}
+          {{user.mobile || '点击获取'}}
         </button>
       </view>
     </view>
@@ -78,21 +78,26 @@
 <script>
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
-  import 'wepy-async-function';
-  import {UPDATE_SHOPPING_CAR, CLEAR_DISH, CLEAR_DISH_NUMBER} from '../store/types'
+  import 'wepy-async-function'
+  import moment from 'moment'
+  import {UPDATE_SHOPPING_CAR, CLEAR_SHOPPING_CAR, CLEAR_MENU, UPDATE_USER} from '../store/types'
   import {createOrder, orderPay, confirmOrderPay} from '../store/actions/order'
 
   @connect({
     shoppingCar(state) {
       return state.shoppingCar
     },
+    user(state) {
+      return state.user
+    },
   }, {
     updateShoppingCar: UPDATE_SHOPPING_CAR,
     createOrder,
     orderPay,
     confirmOrderPay,
-    clearDish: CLEAR_DISH,
-    clearDishNumber: CLEAR_DISH_NUMBER,
+    clearShoppingCar: CLEAR_SHOPPING_CAR,
+    clearMenu: CLEAR_MENU,
+    updateUser: UPDATE_USER,
   })
   export default class Index extends wepy.page {
     config = {
@@ -101,7 +106,7 @@
     components = {}
 
     data = {
-      tags: ['多放辣','不放辣','不放香菜','少放味精','先上凉菜'],
+      tags: ['多放辣', '不放辣', '不放香菜', '少放味精', '先上凉菜'],
     }
 
     methods = {
@@ -112,7 +117,8 @@
         this.methods.updateShoppingCar({time: e.detail.value})
       },
       onMobileChange: e => {
-        this.methods.updateShoppingCar({mobile: e.detail.value})
+        console.log(e)
+        // this.methods.updateUser({mobile: e.detail.value})
       },
       onRemarkChange: e => {
         this.methods.updateShoppingCar({remark: e.detail.value})
@@ -123,7 +129,7 @@
       },
       onPayTap: async e => {
         const {tableId, dishes, people, time, mobile, remark} = this.shoppingCar
-        const {createOrder, orderPay, confirmOrderPay, clearDish, clearDishNumber } = this.methods
+        const {createOrder, orderPay, confirmOrderPay, clearShoppingCar, clearMenu} = this.methods
         try {
           wx.showLoading({
             title: '下单中',
@@ -131,7 +137,8 @@
           const orderData = await createOrder({
             diningTableNum: tableId,
             numberOfDinner: people,
-            dinnerTime: time,
+            dinnerTime: time ? moment(time, 'HH:mm').format('YYYY-MM-DD HH:mm:ss') : null,
+            phoneNo: this.user.mobile,
             remark,
             orderItems: Array.from(dishes, dish => ({
               dishId: dish.id,
@@ -140,13 +147,16 @@
           })
           const payData = await orderPay({orderId: orderData.payload.data})
           const payMessage = await wepy.requestPayment(payData.payload.data)
+            .catch(error => {
+              clearShoppingCar()
+              clearMenu()
+              wx.redirectTo({url: '/pages/order'})
+            })
           if (payMessage) {
             confirmOrderPay({id: orderData.payload.data})
-              .then(data => {
-                clearDish()
-                clearDishNumber()
-                wx.redirectTo({url: '/pages/order'})
-              })
+            clearShoppingCar()
+            clearMenu()
+            wx.redirectTo({url: '/pages/order'})
           }
         } catch (e) {
           wx.hideLoading()
@@ -156,7 +166,7 @@
 
     events = {}
 
-    async onLoad() {
+    onLoad() {
     }
   }
 </script>

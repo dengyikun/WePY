@@ -1,4 +1,6 @@
-export const CREATE_ORDER = 'CREATE_ORDER'
 export const GET_ORDER = 'GET_ORDER'
+export const CLEAR_ORDER = 'CLEAR_ORDER'
+export const GET_ORDER_BY_ID = 'GET_ORDER_BY_ID'
+export const CREATE_ORDER = 'CREATE_ORDER'
 export const ORDER_PAY = 'ORDER_PAY'
 export const CONFIRM_ORDER_PAY = 'CONFIRM_ORDER_PAY'

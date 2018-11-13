@@ -2,68 +2,55 @@
   <view class="container">
     <view class="header">
       <image src="../assets/images/order_header.png"/>
-      <view class="status">
-        完成支付
+      <view wx:if="{{status === 'waitingPay'}}" class="status">
+        等待付款
+      </view>
+      <view wx:if="{{status === 'paying'}}" class="status">
+        付款中
+      </view>
+      <view wx:if="{{status === 'calcel'}}" class="status">
+        已取消
+      </view>
+      <view wx:if="{{status === 'finish'}}" class="status">
+        已完成
       </view>
       <view>
-        欢迎您的光临 您的就餐桌号为<text> 6 </text>号
+        欢迎您的光临 您的就餐桌号为<text> {{diningTableNum}} </text>号
       </view>
       <view>
-        订单编号：888888888888
+        订单编号：{{outTradeNo}}
       </view>
       <view>
-        支付时间：2018-08-08 08:08
+        下单时间：{{createTime}}
       </view>
       <view>
         支付方式：微信支付
       </view>
     </view>
     <view class="menu">
-      <view class="menu-header">
-        <view class="people">
-          用餐人数：3 人
+      <view wx:if="{{numberOfDinner || dinnerTime}}" class="menu-header">
+        <view wx:if="{{numberOfDinner}}" class="people">
+          用餐人数：{{numberOfDinner}} 人
         </view>
-        <view class="menu-list">
-          用餐时间：2018-08-08 08:08
+        <view wx:if="{{dinnerTime}}" class="time">
+          用餐时间：{{dinnerTime}}
         </view>
       </view>
       <view class="menu-list">
-        <repeat for="{{shoppingCar.dishes}}"
+        <repeat for="{{orderItems}}"
                 key="index" index="index" item="item">
           <view class="dish">
             <view class="name">
               {{item.name}}
             </view>
             <view class="number">
-              ×{{item.number}}
+              ×{{item.dishNum}}
             </view>
             <view class="price">
-              ￥{{item.price * item.number}}
+              ￥{{item.price * item.dishNum}}
             </view>
           </view>
         </repeat>
-        <view class="dish">
-          <view class="name">
-            炒土豆
-          </view>
-          <view class="number">
-            ×1
-          </view>
-          <view class="price">
-            ￥15
-          </view>
-        </view>
-        <view class="dish">
-          <view class="name">
-            炒番茄
-          </view>
-          <view class="number">
-            ×2
-          </view>
-          <view class="price">
-            ￥40
-          </view>
-        </view>
         <view class="dish">
           <view class="name">
             合计
@@ -71,17 +58,28 @@
           <view class="number">
           </view>
           <view class="price">
-            ￥{{shoppingCar.total}}
+            ￥{{totalPrice}}
           </view>
         </view>
       </view>
     </view>
-    <view class="remark">
+    <view wx:if="{{remark}}" class="remark">
       <view class="remark-header">
         我的备注
       </view>
       <view class="remark-text">
-        多放点辣，麻烦快一点，实在太饿了。
+        {{remark}}
+      </view>
+    </view>
+    <view class="action">
+      <view wx:if="{{status === 'waitingPay'}}" @tap="onPayTap">
+        立即支付
+      </view>
+      <view wx:if="{{status === 'paying'}}">
+        等待就餐
+      </view>
+      <view wx:if="{{status === 'calcel' || status === 'finish'}}" @tap="onOneMoreTap">
+        再来一单
       </view>
     </view>
   </view>
@@ -91,14 +89,21 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
-  import {getOrder} from '../store/actions/order'
+  import {getOrderById, orderPay, confirmOrderPay} from '../store/actions/order'
+  import {CLEAR_MENU, CLEAR_SHOPPING_CAR, UPDATE_MENU, UPDATE_SHOPPING_CAR} from '../store/types'
 
   @connect({
-    order(state) {
-      return state.order
-    }
+    menu(state) {
+      return state.menu
+    },
   }, {
-    getOrder,
+    getOrderById,
+    orderPay,
+    confirmOrderPay,
+    clearMenu: CLEAR_MENU,
+    clearShoppingCar: CLEAR_SHOPPING_CAR,
+    updateMenu: UPDATE_MENU,
+    updateShoppingCar: UPDATE_SHOPPING_CAR,
   })
   export default class Index extends wepy.page {
     config = {
@@ -107,18 +112,101 @@
     components = {}
 
     data = {
+      createTime: '',
+      diningTableNum: '',
+      dinnerTime: '',
+      id: '',
+      numberOfDinner: '',
+      orderItems: [],
+      outTradeNo: '',
+      remark: '',
+      status: '',
+      timeExpire: '',
+      totalPrice: '',
     }
 
     methods = {
-      onOrderTap: e => {
-        wx.navigateTo({url: '/pages/orderDetail'})
+      onPayTap: async e => {
+        wx.showLoading({
+          title: '支付中',
+        })
+        const { orderPay, confirmOrderPay } = this.methods
+        const payData = await orderPay({orderId: this.id})
+        const payMessage = await wepy.requestPayment(payData.payload.data)
+          .catch(error => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '支付失败',
+              icon: 'none'
+            })
+          })
+        if (payMessage) {
+          confirmOrderPay({id: this.id})
+          wx.hideLoading()
+          wx.showToast({title: '支付成功'})
+          this.getOrderById(this.id)
+        }
+      },
+      onOneMoreTap: e => {
+        this.methods.clearMenu()
+        this.methods.clearShoppingCar()
+        const newDishType = this.menu.dishType
+        let dishes = [], number = 0, total = 0
+        this.orderItems.map(item => {
+          const dishTypeIndex = this.menu.dishType.findIndex(type => type.id === item.dishTypeId)
+          if (dishTypeIndex !== -1) {
+            const dishType = this.menu.dishType[dishTypeIndex]
+            const dishIndex = dishType.dishes.findIndex(dish => dish.id === item.dishId)
+            if (dishIndex !== -1) {
+              const dish = dishType.dishes[dishIndex]
+              dishes.push({
+                ...dish,
+                number: item.dishNum,
+                index: dishIndex,
+                typeIndex: dishTypeIndex,
+              })
+              newDishType[dishTypeIndex].number += item.dishNum
+              newDishType[dishTypeIndex].dishes[dishIndex].number += item.dishNum
+              number += item.dishNum
+              total += item.price * item.dishNum
+            }
+          }
+        })
+        this.methods.updateMenu({
+          dishType: newDishType
+        })
+        this.methods.updateShoppingCar({
+          dishes,
+          number,
+          total: total.toFixed(2)
+        })
+        wx.switchTab({
+          url: '/pages/menu'
+        })
       },
     }
 
     events = {}
 
-    async onLoad() {
-      this.methods.getOrder()
+    onLoad(options) {
+      this.getOrderById(options.id)
+    }
+
+    onShow() {
+
+    }
+
+    getOrderById = (id) => {
+      this.methods.getOrderById({id})
+        .then(data => {
+          const order = data.payload.data
+          if (order) {
+            Object.keys(order).map(key => {
+              this[key] = order[key]
+            })
+            this.$apply()
+          }
+        })
     }
   }
 </script>
@@ -128,7 +216,7 @@
   .container {
     background: #f5f5f5;
     min-height: 100vh;
-    padding: 20rpx;
+    padding: 20rpx 20rpx 100rpx 20rpx;
 
     .header {
       width: 100%;
@@ -150,7 +238,7 @@
         color: #afafaf;
         font-size: 22rpx;
         line-height: 40rpx;
-        width: 350rpx;
+        width: 360rpx;
         text-align: left;
 
         text {
@@ -183,11 +271,13 @@
 
         .people {
           width: 50%;
+          flex: auto;
         }
 
         .time {
-          width: 50rpx;
+          width: 50%;
           text-align: right;
+          flex: auto;
         }
       }
 
@@ -253,6 +343,19 @@
         line-height: 1.5;
         padding: 20rpx 0;
       }
+    }
+
+    .action {
+      width: 100%;
+      height: 80rpx;
+      line-height: 80rpx;
+      font-size: 28rpx;
+      color: #ffffff;
+      text-align: center;
+      background: #353535;
+      position: fixed;
+      left: 0;
+      bottom: 0;
     }
   }
 </style>

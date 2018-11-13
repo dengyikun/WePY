@@ -1,14 +1,18 @@
 import {createAction} from 'redux-actions'
-import {GET_ORDER, CREATE_ORDER, ORDER_PAY, CONFIRM_ORDER_PAY} from '../types/order'
+import {GET_ORDER, GET_ORDER_BY_ID, CREATE_ORDER, ORDER_PAY, CONFIRM_ORDER_PAY} from '../types/order'
 import {requestWithToken} from '../../utils/request'
 
-export const getOrder = createAction(GET_ORDER, () => {
+export const getOrder = createAction(GET_ORDER, (data) => {
   return requestWithToken({
     url: '/order/page',
-    data: {
-      page: 1,
-      pageSize: 10,
-    }
+    data,
+  })
+})
+
+export const getOrderById = createAction(GET_ORDER_BY_ID, (data) => {
+  return requestWithToken({
+    url: '/order/getOrderById',
+    data,
   })
 })
 

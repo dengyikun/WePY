@@ -2,10 +2,11 @@ import {handleActions} from 'redux-actions'
 import {
   GET_DISH_TYPE,
   GET_ALL_DISH,
+  UPDATE_MENU,
   UPDATE_ACTIVE_DISH_TYPE_INDEX,
-  ADD_DISH_NUMBER,
-  SUBTRACT_DISH_NUMBER,
-  CLEAR_DISH_NUMBER,
+  ADD_IN_MENU,
+  SUBTRACT_IN_MENU,
+  CLEAR_MENU,
 } from '../types/menu'
 
 export default handleActions({
@@ -21,13 +22,19 @@ export default handleActions({
       dishType: action.payload
     }
   },
+  [UPDATE_MENU](state, action) {
+    return {
+      ...state,
+      ...action.payload
+    }
+  },
   [UPDATE_ACTIVE_DISH_TYPE_INDEX](state, action) {
     return {
       ...state,
       activeDishTypeIndex: action.payload
     }
   },
-  [ADD_DISH_NUMBER](state, action) {
+  [ADD_IN_MENU](state, action) {
     const {id, index, typeIndex} = action.payload
     const dishType = state.dishType
     if (dishType[typeIndex].dishes[index].id === id){
@@ -39,7 +46,7 @@ export default handleActions({
       dishType
     }
   },
-  [SUBTRACT_DISH_NUMBER](state, action) {
+  [SUBTRACT_IN_MENU](state, action) {
     const {id, index, typeIndex} = action.payload
     const dishType = state.dishType
     if (dishType[typeIndex].dishes[index].id === id){
@@ -51,7 +58,7 @@ export default handleActions({
       dishType
     }
   },
-  CLEAR_DISH_NUMBER(state, action) {
+  [CLEAR_MENU](state, action) {
     const dishType = state.dishType
     dishType.map(item => {
       item.number = 0

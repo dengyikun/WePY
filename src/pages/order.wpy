@@ -1,38 +1,52 @@
 <template>
   <view class="container">
-    <view class="order">
-      <view class="info" @tap="onOrderTap">
-        <view class="order-number">
-          订单编号：8888888888888
+    <repeat for="{{order.list}}"
+            key="index" index="index" item="item">
+      <view class="order">
+        <view class="info" @tap="onOrderTap" data-id="{{item.id}}">
+          <view class="order-number">
+            订单编号：{{item.outTradeNo}}
+          </view>
+          <view wx:if="{{item.status === 'waitingPay'}}" class="status active">
+            等待付款
+          </view>
+          <view wx:if="{{item.status === 'paying'}}" class="status active">
+            付款中
+          </view>
+          <view wx:if="{{item.status === 'calcel'}}" class="status">
+            已取消
+          </view>
+          <view wx:if="{{item.status === 'finish'}}" class="status">
+            已完成
+          </view>
+          <view class="time">
+            下单时间：{{item.createTime}}
+          </view>
+          <view class="dish-name">
+            {{item.orderItems[0].name}}
+          </view>
+          <view class="dish-number">
+            {{item.orderItems.length > 1 ? ('等 ' + item.orderItems.length + ' 件商品') : ' '}}
+          </view>
+          <view class="total">
+            ￥{{item.totalPrice}}
+          </view>
         </view>
-        <view class="status active">
-          已完成
-        </view>
-        <view class="time">
-          下单时间：2018-08-08 08:08
-        </view>
-        <view class="dish-name">
-          炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝炒土豆丝
-        </view>
-        <view class="dish-number">
-          等 2 件商品
-        </view>
-        <view class="total">
-          ￥20.00
+        <view class="action">
+          <view wx:if="{{item.status === 'waitingPay'}}" class="pay"
+                @tap="onPayTap" data-id="{{item.id}}">
+            立即支付
+          </view>
+          <view wx:if="{{item.status === 'paying'}}" class="wait">
+            等待就餐
+          </view>
+          <view wx:if="{{item.status === 'calcel' || item.status === 'finish'}}" class="one-more"
+                @tap="onOneMoreTap" data-data="{{item}}">
+            再来一单
+          </view>
         </view>
       </view>
-      <view class="action">
-        <!--<view class="pay">-->
-          <!--立即支付-->
-        <!--</view>-->
-        <!--<view class="wait">-->
-          <!--等待就餐-->
-        <!--</view>-->
-        <view class="more" @tap="onMoreTap">
-          再来一单
-        </view>
-      </view>
-    </view>
+    </repeat>
   </view>
 </template>
 
@@ -40,18 +54,30 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
-  import {getOrder} from '../store/actions/order'
+  import {getOrder, orderPay, confirmOrderPay} from '../store/actions/order'
+  import {CLEAR_ORDER, CLEAR_MENU, CLEAR_SHOPPING_CAR, UPDATE_MENU, UPDATE_SHOPPING_CAR} from '../store/types'
 
   @connect({
     order(state) {
       return state.order
-    }
+    },
+    menu(state) {
+      return state.menu
+    },
   }, {
     getOrder,
+    orderPay,
+    confirmOrderPay,
+    clearOrder: CLEAR_ORDER,
+    clearMenu: CLEAR_MENU,
+    clearShoppingCar: CLEAR_SHOPPING_CAR,
+    updateMenu: UPDATE_MENU,
+    updateShoppingCar: UPDATE_SHOPPING_CAR,
   })
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '我的订单'
+      navigationBarTitleText: '我的订单',
+      onReachBottomDistance: 400,
     }
     components = {}
 
@@ -60,20 +86,88 @@
 
     methods = {
       onOrderTap: e => {
-        wx.navigateTo({url: '/pages/orderDetail'})
+        wx.navigateTo({url: '/pages/orderDetail?id=' + e.currentTarget.dataset.id})
       },
-      onMoreTap: e => {
-        wx.showToast({
-          title: '开发中......',
-          icon: 'none'
+      onPayTap: async e => {
+        wx.showLoading({
+          title: '支付中',
+        })
+        const id = e.currentTarget.dataset.id
+        const { orderPay, confirmOrderPay } = this.methods
+        const payData = await orderPay({orderId: id})
+        const payMessage = await wepy.requestPayment(payData.payload.data)
+          .catch(error => {
+            wx.showToast({
+              title: '支付失败',
+              icon: 'none'
+            })
+          })
+        if (payMessage) {
+          confirmOrderPay({id})
+          wx.showToast({title: '支付成功'})
+          this.getOrder()
+        }
+      },
+      onOneMoreTap: e => {
+        const order = e.currentTarget.dataset.data
+        this.methods.clearMenu()
+        this.methods.clearShoppingCar()
+        const newDishType = this.menu.dishType
+        let dishes = [], number = 0, total = 0
+        order.orderItems.map(item => {
+          const dishTypeIndex = this.menu.dishType.findIndex(type => type.id === item.dishTypeId)
+          if (dishTypeIndex !== -1) {
+            const dishType = this.menu.dishType[dishTypeIndex]
+            const dishIndex = dishType.dishes.findIndex(dish => dish.id === item.dishId)
+            if (dishIndex !== -1) {
+              const dish = dishType.dishes[dishIndex]
+              dishes.push({
+                ...dish,
+                number: item.dishNum,
+                index: dishIndex,
+                typeIndex: dishTypeIndex,
+              })
+              newDishType[dishTypeIndex].number += item.dishNum
+              newDishType[dishTypeIndex].dishes[dishIndex].number += item.dishNum
+              number += item.dishNum
+              total += item.price * item.dishNum
+            }
+          }
+        })
+        this.methods.updateMenu({
+          dishType: newDishType
+        })
+        this.methods.updateShoppingCar({
+          dishes,
+          number,
+          total: total.toFixed(2)
+        })
+        wx.switchTab({
+          url: '/pages/menu'
         })
       },
     }
 
     events = {}
 
-    async onLoad() {
-      this.methods.getOrder()
+    onLoad() {
+      this.getOrder()
+    }
+
+    onReachBottom() {
+      if (!this.order.lastPage) {
+        this.getOrder(this.order.pageNumber + 1)
+      }
+    }
+
+    getOrder = (page = 1) => {
+      if (page === 1) {
+        this.methods.clearOrder()
+      }
+      this.methods.getOrder({
+        page,
+        pageSize: 10,
+      })
     }
   }
 </script>
@@ -143,7 +237,7 @@
         display: flex;
         flex-flow: row-reverse;
 
-        .pay, .wait, .more {
+        .pay, .wait, .one-more {
           width: 160rpx;
           height: 50rpx;
           line-height: 50rpx;

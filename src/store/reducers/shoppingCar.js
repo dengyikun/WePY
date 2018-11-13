@@ -1,5 +1,11 @@
 import {handleActions} from 'redux-actions'
-import {SET_TABLE_ID, ADD_DISH, SUBTRACT_DISH, CLEAR_DISH, UPDATE_SHOPPING_CAR} from '../types/shoppingCar'
+import {
+  SET_TABLE_ID,
+  ADD_IN_SHOPPING_CAR,
+  SUBTRACT_IN_SHOPPING_CAR,
+  CLEAR_SHOPPING_CAR,
+  UPDATE_SHOPPING_CAR,
+} from '../types/shoppingCar'
 
 export default handleActions({
   [SET_TABLE_ID](state, action) {
@@ -8,7 +14,7 @@ export default handleActions({
       tableId: action.payload
     }
   },
-  [ADD_DISH](state, action) {
+  [ADD_IN_SHOPPING_CAR](state, action) {
     let {dishes, number, total} = state
     const payload = action.payload
     let index = dishes.findIndex(item => item.id === payload.id)
@@ -32,7 +38,7 @@ export default handleActions({
       total,
     }
   },
-  [SUBTRACT_DISH](state, action) {
+  [SUBTRACT_IN_SHOPPING_CAR](state, action) {
     let {dishes, number, total} = state
     const payload = action.payload
     let index = dishes.findIndex(item => item.id === payload.id)
@@ -55,7 +61,7 @@ export default handleActions({
       total,
     }
   },
-  [CLEAR_DISH](state, action) {
+  [CLEAR_SHOPPING_CAR](state, action) {
     return {
       ...state,
       dishes: [],
@@ -76,6 +82,5 @@ export default handleActions({
   total: "0.00",
   people: null,
   time: null,
-  mobile: null,
   remark: '',
 })

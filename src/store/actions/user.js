@@ -19,14 +19,7 @@ export const login = createAction(LOGIN, () => {
 })
 
 export const getUser = createAction(GET_USER, () => {
-  return new Promise(async (resolve, reject) => {
-    const data = await requestWithToken({
-      url: '/guest/currentUserInfo'
-    }).catch(reject)
-
-    resolve({
-      ...data.guestInfo,
-      ...data.guestInfo
-    })
+  return requestWithToken({
+    url: '/guest/currentUserInfo'
   })
 })
