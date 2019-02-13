@@ -231,7 +231,7 @@
 
     events = {}
 
-    onLoad() {
+    onShow() {
       wx.showLoading({
         title: '加载中',
       })

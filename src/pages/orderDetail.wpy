@@ -134,7 +134,10 @@
         })
         const {orderPay, confirmOrderPay} = this.methods
         const payData = await orderPay({orderId: this.id})
-        const payMessage = await wepy.requestPayment(payData.payload.data)
+        const payMessage = await wepy.requestPayment({
+          ...payData.payload.data,
+          package: payData.payload.data.packageValue
+        })
           .catch(error => {
             wx.hideLoading()
             wx.showToast({

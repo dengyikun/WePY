@@ -94,7 +94,10 @@
         const id = e.currentTarget.dataset.id
         const {orderPay, confirmOrderPay} = this.methods
         const payData = await orderPay({orderId: id})
-        const payMessage = await wepy.requestPayment(payData.payload.data)
+        const payMessage = await wepy.requestPayment({
+          ...payData.payload.data,
+          package: payData.payload.data.packageValue
+        })
           .catch(error => {
             wx.showToast({
               title: '支付失败',

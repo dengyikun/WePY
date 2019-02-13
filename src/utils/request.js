@@ -1,6 +1,6 @@
 import wepy from 'wepy'
 
-const apiHost = 'https://www.russan.xyz'
+const apiHost = 'https://www.russan.xyz/wxapp/order_meal'
 
 const codeMessage = {
   200: '200 成功获取请求的数据',

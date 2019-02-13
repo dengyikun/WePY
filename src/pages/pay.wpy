@@ -148,7 +148,10 @@
             }))
           })
           const payData = await orderPay({orderId: orderData.payload.data})
-          const payMessage = await wepy.requestPayment(payData.payload.data)
+          const payMessage = await wepy.requestPayment({
+            ...payData.payload.data,
+            package: payData.payload.data.packageValue
+          })
             .catch(error => {
               clearShoppingCar()
               clearMenu()
