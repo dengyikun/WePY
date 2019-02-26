@@ -19,6 +19,7 @@
   import wepy from 'wepy'
   import {connect} from 'wepy-redux'
   import 'wepy-async-function';
+  import {getParams} from '../utils/utils'
   import {login, getUser} from '../store/actions/user'
   import {SET_TABLE_ID, UPDATE_USER} from '../store/types'
 
@@ -59,9 +60,15 @@
 
     events = {}
 
-    onLoad() {
+    onLoad(options) {
+      console.log(options, '====== options ======')
+      const scene = options && options.scene && decodeURIComponent(options.scene) || ''; // 获取通过扫描二维码进入的自定义参数
+      console.log(scene, '====== scene ======')
+      const tableId = getParams(scene, 'tableId')
+      if (tableId) {
+        this.methods.setTableId(tableId)
+      }
       this.login()
-      this.methods.setTableId('16')
       this.getUserInfo()
     }
 
